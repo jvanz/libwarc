@@ -1,2 +1,2 @@
 # libwarc
-C++ library in parse WARC files
+C++ library to parse WARC files
