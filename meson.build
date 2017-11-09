@@ -17,6 +17,5 @@ tests_sources = ['tests/main.cc']
 tests_dependencies = [dependency('gtest'), libwarc_dep]
 executable('tests', 
 	tests_sources, 
-	dependencies: tests_dependencies,
-	link_with: libwarc)
+	dependencies: tests_dependencies)
 
