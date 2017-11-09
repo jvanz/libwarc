@@ -27,6 +27,8 @@ libwarc_dep = declare_dependency(
 tests_sources = ['tests/main.cc']
 tests_dependencies = [dependency('gtest'), libwarc_dep]
 
-executable('tests', 
+tests = executable('tests', 
 	tests_sources, 
 	dependencies: tests_dependencies)
+
+test('warcfield', tests, args: ['--gtest_filter=WARCField.*'])
