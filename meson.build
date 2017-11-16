@@ -1,4 +1,4 @@
-project('libwarc', 'cpp', version: '0.9.0')
+project('libwarc', 'cpp', version: '0.9.0', default_options : ['cpp_std=c++14'])
 
 sources = ['src/warc.cc']
 include = include_directories('include')
