@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _WARC_HH
+#define _WARC_HH
 
 #include <string>
 #include <istream>
@@ -7,16 +8,16 @@ using namespace std;
 
 namespace warc { inline namespace v1 { 
 
-template <typename T>
-class WARCField
+class WARCRecord
 {
 	private:
-		string name;
-		T value;
+		string version;
 	public:
-		explicit WARCField(string name, T value): name{name}, value{value} {};
-		inline string get_name() const { return this->name; };
-		inline T get_value() const { return this->value; };
+		explicit WARCRecord(string version): version{version} {};
 };
+	
+void parse_warc_record(istream& stream);
 
-} }
+} };
+
+#endif
