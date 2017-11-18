@@ -3,44 +3,45 @@
 
 #include <string>
 #include <istream>
-
-using namespace std;
+#include <list>
 
 namespace warc { inline namespace v1 { 
+
+// forward declaration
+class WARCRecord;
 
 template<typename T>
 class WARCField
 {
-	std::string name;
-	T value;
+	private:
+		std::string name;
+		T value;
 	public:
-		explicit WARCField(string _name, T _value) : name{_name}, 
-			 value{_value} { }
-		// move constructor
-		WARCField(WARCField&& r) : name(std::move(r.name)), 
-			value(std::move(r.value)) { };
+		explicit WARCField() {};
+
 	template<typename P>
-	friend std::ostream& operator<<(std::ostream& os, const WARCField<P>& field);
+	friend std::ostream& operator<< (std::ostream& os, const WARCField<P>& field);
+	friend std::istream& operator>> (std::istream& is, struct WARCFieldTemp& field);
+	friend std::istream& operator>> (std::istream& is, WARCRecord& record);
 };
 
-template<typename T>
-std::ostream& operator<<(std::ostream& os, const WARCField<T>& field)
-{
-	std::ostream::sentry s(os);
-	if (s) 
-		os << field.name << ": " << field.value;
-	return os;
-};
 
+/// WARC record object. 
+/// Store all field from the record header and its content
 class WARCRecord
 {
 	private:
-		string version;
+		std::string version;
+		std::list<WARCField<std::string>> fields;
 	public:
-		explicit WARCRecord(string version): version{version} {};
+		explicit WARCRecord() {};
+
+	friend std::ostream& operator<<(std::ostream& os, const WARCRecord& record);
+	friend std::istream& operator>> (std::istream& is, WARCRecord& record);
 };
+
 	
-void parse_warc_record(istream& stream);
+WARCRecord parse_warc_record(std::istream& stream);
 
 } };
 

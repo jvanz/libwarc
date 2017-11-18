@@ -10,7 +10,7 @@ namespace warc { inline namespace v1 {
 static const char CR = 0x0d;
 static const char LF = 0x0a;
 
-struct WARCField
+struct WARCFieldTemp
 {
 	std::string name;
 	std::string value;
@@ -18,7 +18,7 @@ struct WARCField
 
 // when we read data from the warc file to a string always read until
 // CRLF chars found
-std::istream& operator>> (std::istream& is, string& str)
+std::istream& operator>> (std::istream& is, std::string& str)
 {
 	std::istream::sentry s(is);
 	if (s) {
@@ -34,7 +34,7 @@ std::istream& operator>> (std::istream& is, string& str)
 }
 
 // parse a WARCField from the istream
-std::istream& operator>> (std::istream& is, struct WARCField& field)
+std::istream& operator>> (std::istream& is, struct WARCFieldTemp& field)
 {
 	std::istream::sentry s(is);
 	if (s) {
@@ -51,17 +51,57 @@ std::istream& operator>> (std::istream& is, struct WARCField& field)
 	return is;
 }
 
-void parse_warc_record(istream& is)
+/// parse the new WARCRecord from the istream
+std::istream& operator>>(std::istream& is, WARCRecord& record)
 {
-	string version;
-	is >> version;
-	std::cout << "Record version: " << version << std::endl;
-	while(is.good()) {
-		WARCField field;
-		is >> field;
-		if (is.good())
-			std::cout << field.name << " : " << field.value << std::endl;
+	std::istream::sentry s(is);
+	if (s) {
+		// get the record version
+		std::string version;
+		is >> version;
+		record.version = version;
+		// read the header data
+		while(is.good()) {
+			struct WARCFieldTemp f;
+			is >> f;
+			// empty line (end of the header)
+			if (is.eof())
+				break;
+			WARCField<std::string> field;
+			field.name = f.name;
+			field.value = f.value;
+			record.fields.push_back(std::move(field));
+		}
+		// read record content
+		// TODO
 	}
+	return is;
+}
+
+std::ostream& operator<<(std::ostream& os, const WARCRecord& record)
+{
+	std::ostream::sentry s(os);
+	if (s) {
+		for (auto field : record.fields)
+			os << field << std::endl;
+	}
+	return os;
+};
+
+template<typename T>
+std::ostream& operator<<(std::ostream& os, const WARCField<T>& field)
+{
+	std::ostream::sentry s(os);
+	if (s) 
+		os << field.name << ": " << field.value;
+	return os;
+};
+
+WARCRecord parse_warc_record(std::istream& is)
+{
+	WARCRecord record;
+	is >> record;
+	return record;
 }
 
 } };
