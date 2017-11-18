@@ -1,7 +1,6 @@
 #include <iostream>
-#include <sstream>
 #include <algorithm>
-#include <iterator>
+#include <cctype>
 
 #include "warc.hh"
 
@@ -46,7 +45,11 @@ std::istream& operator>> (std::istream& is, struct WARCFieldTemp& field)
 		}
 		auto p = std::find(line.begin(), line.end(), ':');
 		std::move(line.begin(), p, std::back_inserter(field.name));
-		std::move(p+1, line.end(), std::back_inserter(field.value));
+		p++; // skip ":"
+		// remove white space after ":" char if exits
+		while (isspace(*p))
+			p++;
+		std::move(p, line.end(), std::back_inserter(field.value));
 	}
 	return is;
 }
