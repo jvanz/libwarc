@@ -9,12 +9,6 @@ namespace warc { inline namespace v1 {
 static const char CR = 0x0d;
 static const char LF = 0x0a;
 
-struct WARCFieldTemp
-{
-	std::string name;
-	std::string value;
-};
-
 // when we read data from the warc file to a string always read until
 // CRLF chars found
 std::istream& operator>> (std::istream& is, std::string& str)
@@ -33,7 +27,7 @@ std::istream& operator>> (std::istream& is, std::string& str)
 }
 
 // parse a WARCField from the istream
-std::istream& operator>> (std::istream& is, struct WARCFieldTemp& field)
+std::istream& operator>> (std::istream& is, WARCField& field)
 {
 	std::istream::sentry s(is);
 	if (s) {
@@ -65,14 +59,11 @@ std::istream& operator>>(std::istream& is, WARCRecord& record)
 		record.version = version;
 		// read the header data
 		while(is.good()) {
-			struct WARCFieldTemp f;
-			is >> f;
+			WARCField field;
+			is >> field;
 			// empty line (end of the header)
 			if (is.eof())
 				break;
-			WARCField<std::string> field;
-			field.name = f.name;
-			field.value = f.value;
 			record.fields.push_back(std::move(field));
 		}
 		// read record content
@@ -91,8 +82,7 @@ std::ostream& operator<<(std::ostream& os, const WARCRecord& record)
 	return os;
 };
 
-template<typename T>
-std::ostream& operator<<(std::ostream& os, const WARCField<T>& field)
+std::ostream& operator<<(std::ostream& os, const WARCField& field)
 {
 	std::ostream::sentry s(os);
 	if (s) 

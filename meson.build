@@ -31,4 +31,4 @@ tests = executable('tests',
 	tests_sources, 
 	dependencies: tests_dependencies)
 
-test('warcfield', tests, args: ['--gtest_filter=WARCRecord.*'])
+test('warcrecord', tests, args: ['--gtest_filter=WARCRecord.*'])

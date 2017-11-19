@@ -11,21 +11,19 @@ namespace warc { inline namespace v1 {
 class WARCRecord;
 
 /// A WARC field definition found within WARC record header
-template<typename T>
 class WARCField
 {
 	private:
 		std::string name;
-		T value;
+		std::string value;
 	public:
 		explicit WARCField() {};
 
 		std::string get_name() const { return this->name; };
-		T get_value() const {return this->value; };
+		std::string get_value() const { return this->value; };
 
-	template<typename P>
-	friend std::ostream& operator<< (std::ostream& os, const WARCField<P>& field);
-	friend std::istream& operator>> (std::istream& is, struct WARCFieldTemp& field);
+	friend std::ostream& operator<< (std::ostream& os, const WARCField& field);
+	friend std::istream& operator>> (std::istream& is, WARCField& field);
 	friend std::istream& operator>> (std::istream& is, WARCRecord& record);
 };
 
@@ -36,7 +34,7 @@ class WARCRecord
 {
 	private:
 		std::string version;
-		std::list<WARCField<std::string>> fields;
+		std::list<WARCField> fields;
 	public:
 		explicit WARCRecord() {};
 		/// return all WARC records fields
