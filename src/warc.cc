@@ -3,6 +3,7 @@
 #include <cctype>
 
 #include "warc.hh"
+#include "constants.hh"
 
 namespace warc { inline namespace v1 { 
 	
@@ -69,8 +70,16 @@ std::istream& operator>>(std::istream& is, WARCRecord& record)
 				break;
 			record.fields.push_back(std::move(field));
 		}
-		// read record content
-		// TODO
+		// reset fail bit
+		is.clear();
+		// get the content length.
+		auto it = find(record.fields.begin(), record.fields.end(), CONTENT_LENGTH);
+		if (it != record.fields.end()){
+			auto length = stoul(it->value);
+			char buffer[length];
+			if (is.read(buffer, length))
+				record.content = std::move(std::string(buffer, length));
+		}
 	}
 	return is;
 }
