@@ -21,6 +21,10 @@ class WARCField
 
 		std::string get_name() const { return this->name; };
 		std::string get_value() const { return this->value; };
+		// Let's allow the user find the field by name
+		bool operator== (const std::string& name){
+			return this->name == name;
+		};
 
 	friend std::ostream& operator<< (std::ostream& os, const WARCField& field);
 	friend std::istream& operator>> (std::istream& is, WARCField& field);
