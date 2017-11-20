@@ -1,6 +1,6 @@
 project('libwarc', 'cpp', version: '0.9.0', default_options : ['cpp_std=c++14'])
 
-sources = ['src/warc.cc']
+sources = ['src/warc.cc', 'src/constants.hh', 'src/constants.cc']
 include = include_directories('include')
 
 libwarc = shared_library('warc', sources, 

@@ -34,11 +34,14 @@ std::istream& operator>> (std::istream& is, WARCField& field)
 		std::string line;
 		is >> line; 
 		if (line.empty()){
-			is.setstate(std::ios_base::eofbit);
+			is.setstate(std::ios_base::failbit);
 			return is;
 		}
 		auto p = std::find(line.begin(), line.end(), ':');
 		std::move(line.begin(), p, std::back_inserter(field.name));
+		// XXX throw an exception or invalid the stream?
+		if (!is_warc_field_name(field.name))
+			throw "Unexpected field";
 		p++; // skip ":"
 		// remove white space after ":" char if exits
 		while (isspace(*p))
@@ -62,7 +65,7 @@ std::istream& operator>>(std::istream& is, WARCRecord& record)
 			WARCField field;
 			is >> field;
 			// empty line (end of the header)
-			if (is.eof())
+			if (is.fail())
 				break;
 			record.fields.push_back(std::move(field));
 		}
