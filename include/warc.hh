@@ -34,17 +34,26 @@ class WARCField
 
 /// WARC record object. 
 /// Store all field from the record header and its content
+// TODO - allow the user to access a WARC field by name instead of iterator over
+// all of them
 class WARCRecord
 {
 	private:
 		std::string version;
 		std::list<WARCField> fields;
+		std::string content;
+		
 	public:
 		explicit WARCRecord() {};
-		/// return all WARC records fields
+		/// return all WARC records fields.
 		auto get_fields() const
 		{
 			return this->fields;
+		}
+
+		std::string get_content() const
+		{
+			return this->content;
 		}
 
 	friend std::ostream& operator<< (std::ostream& os, const WARCRecord& record);
