@@ -17,13 +17,21 @@ class WARCField
 		std::string name;
 		std::string value;
 	public:
-		explicit WARCField() {};
-
+		explicit WARCField() { };
 		std::string get_name() const { return this->name; };
 		std::string get_value() const { return this->value; };
 		// Let's allow the user find the field by name
 		bool operator== (const std::string& name){
 			return this->name == name;
+		};
+		bool operator== (const WARCField& other) const
+		{
+			return this->name == other.name
+				&& this->value == other.value;
+		};
+		bool operator!= (const WARCField& other) const
+		{
+			return !(*this == other);
 		};
 
 	friend std::ostream& operator<< (std::ostream& os, const WARCField& field);
@@ -32,7 +40,7 @@ class WARCField
 };
 
 
-/// WARC record object. 
+/// WARC record object.
 /// Store all field from the record header and its content
 // TODO - allow the user to access a WARC field by name instead of iterator over
 // all of them
@@ -55,7 +63,18 @@ class WARCRecord
 		std::string get_content() const
 		{
 			return this->content;
-		}
+		};
+
+		bool operator== (const WARCRecord& other)
+		{
+			return this->version == other.version
+				&& this->fields == other.fields
+				&& this->content == other.content;
+		};
+		bool operator!= (const WARCRecord& other)
+		{
+			return !(*this == other);
+		};
 
 	friend std::ostream& operator<< (std::ostream& os, const WARCRecord& record);
 	friend std::istream& operator>> (std::istream& is, WARCRecord& record);
