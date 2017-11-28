@@ -124,6 +124,7 @@ std::stringstream get_record2_content()
 	ss << "User-Agent: CCBot/2.0 (http://commoncrawl.org/faq/)" << CR << LF;
 	ss << "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" << CR << LF;
 	ss << "If-Modified-Since: Sat, 19 Aug 2017 09:15:44 GMT" << CR << LF;
+	ss << CR << LF;
 	return ss;
 }
 

@@ -29,12 +29,10 @@ TEST(WARCRecord, warc_record_input_iterator)
 	std::stringstream records;
 	records << get_record().str();
 	records << get_record2().str();
-	//std::istream_iterator<WARCRecord> it(records);
-	WARCRecord record;
-	records >> record;
-	ASSERT_EQ(6, record.get_fields().size())
+	std::istream_iterator<WARCRecord> it(records);
+	ASSERT_EQ(6, it->get_fields().size())
 		<< "There are more fields than expected";
-	for (auto field : record.get_fields()){
+	for (auto field : it->get_fields()){
 		if (field.get_name() == "WARC-Type")
 			ASSERT_EQ("warcinfo", field.get_value())
 				<< "Invalid WARC-Type value";
@@ -57,15 +55,12 @@ TEST(WARCRecord, warc_record_input_iterator)
 			FAIL() << "Unknown field: " << field.get_name() << ": "
 				<< field.get_value();
 	}
-	ASSERT_EQ(get_record_content().str(), record.get_content());
-	ASSERT_EQ(get_record_content().str().size(), record.get_content().size());
-	//it++;
-	WARCRecord record2;
-	records >> record2;
-	std::cout << record2 << std::endl;
-	ASSERT_EQ(8, record2.get_fields().size())
+	EXPECT_EQ(get_record_content().str().size(), it->get_content().size());
+	ASSERT_EQ(get_record_content().str(), it->get_content());
+	it++;
+	ASSERT_EQ(8, it->get_fields().size())
 		<< "There are more fields than expected";
-	for (auto field : record2.get_fields()){
+	for (auto field : it->get_fields()){
 		if (field.get_name() == "WARC-Type")
 			ASSERT_EQ("request", field.get_value())
 				<< "Invalid WARC-Type value";
@@ -94,8 +89,8 @@ TEST(WARCRecord, warc_record_input_iterator)
 			FAIL() << "Unknown field: " << field.get_name() << ": "
 				<< field.get_value();
 	}
-	ASSERT_EQ(get_record2_content().str(), record2.get_content());
-	ASSERT_EQ(get_record2_content().str().size(), record2.get_content().size());
+	EXPECT_EQ(get_record2_content().str().size(), it->get_content().size());
+	ASSERT_EQ(get_record2_content().str(), it->get_content());
 
 }
 
