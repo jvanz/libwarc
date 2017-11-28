@@ -5,8 +5,8 @@
 #include "warc.hh"
 #include "constants.hh"
 
-namespace warc { inline namespace v1 { 
-	
+namespace warc { inline namespace v1 {
+
 static const char CR = 0x0d;
 static const char LF = 0x0a;
 
@@ -33,7 +33,7 @@ std::istream& operator>> (std::istream& is, WARCField& field)
 	std::istream::sentry s(is);
 	if (s) {
 		std::string line;
-		is >> line; 
+		is >> line;
 		if (line.empty()){
 			is.setstate(std::ios_base::failbit);
 			return is;
@@ -77,9 +77,16 @@ std::istream& operator>>(std::istream& is, WARCRecord& record)
 		if (it != record.fields.end()){
 			auto length = stoul(it->value);
 			char buffer[length];
-			if (is.read(buffer, length))
-				record.content = std::move(std::string(buffer, length));
+			if (is.read(buffer, length)){
+				record.content = std::string(buffer, length);
+			}
 		}
+		// skip white spaces, CR and LF until next record;
+		char c = CR;
+		do {
+			c = is.get();
+		} while(std::isspace(c) && !is.eof() &&!is.fail());
+		is.unget();
 	}
 	return is;
 }
@@ -90,6 +97,7 @@ std::ostream& operator<<(std::ostream& os, const WARCRecord& record)
 	if (s) {
 		for (auto field : record.fields)
 			os << field << std::endl;
+		os << std::endl << "content: " << std::endl << record.content << std::endl;
 	}
 	return os;
 };
@@ -97,16 +105,9 @@ std::ostream& operator<<(std::ostream& os, const WARCRecord& record)
 std::ostream& operator<<(std::ostream& os, const WARCField& field)
 {
 	std::ostream::sentry s(os);
-	if (s) 
+	if (s)
 		os << field.name << ": " << field.value;
 	return os;
 };
-
-WARCRecord parse_warc_record(std::istream& is)
-{
-	WARCRecord record;
-	is >> record;
-	return record;
-}
 
 } };

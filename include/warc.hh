@@ -5,7 +5,7 @@
 #include <istream>
 #include <list>
 
-namespace warc { inline namespace v1 { 
+namespace warc { inline namespace v1 {
 
 // forward declaration
 class WARCRecord;
@@ -42,14 +42,15 @@ class WARCRecord
 		std::string version;
 		std::list<WARCField> fields;
 		std::string content;
-		
+
 	public:
-		explicit WARCRecord() {};
+		explicit WARCRecord() { };
+
 		/// return all WARC records fields.
 		auto get_fields() const
 		{
 			return this->fields;
-		}
+		};
 
 		std::string get_content() const
 		{
@@ -60,8 +61,11 @@ class WARCRecord
 	friend std::istream& operator>> (std::istream& is, WARCRecord& record);
 };
 
-	
-WARCRecord parse_warc_record(std::istream& stream);
+// operator to parse/print the WARC fields and records
+std::ostream& operator<< (std::ostream& os, const WARCField& field);
+std::istream& operator>> (std::istream& is, WARCField& field);
+std::istream& operator>> (std::istream& is, WARCRecord& record);
+std::ostream& operator<< (std::ostream& os, const WARCRecord& record);
 
 } };
 
