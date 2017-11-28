@@ -57,6 +57,11 @@ std::istream& operator>>(std::istream& is, WARCRecord& record)
 {
 	std::istream::sentry s(is);
 	if (s) {
+		// istream_iterator reuse the WARCRecord object. Let's
+		// recycle it
+		record.fields.clear();
+		record.version.clear();
+		record.content.clear();
 		// get the record version
 		std::string version;
 		is >> version;
