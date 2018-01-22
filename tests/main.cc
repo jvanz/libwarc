@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <sstream>
+#include <fstream>
 #include <type_traits>
 
 #include "warc.hh"
@@ -188,6 +189,17 @@ TEST(WARCRecord, warc_record_input_iterator_within_loop)
 		}
 		count++;
 	}
+	ASSERT_EQ(2, count);
+}
+
+TEST(WARCFile, iterator)
+{
+	std::fstream records;
+	records << get_record().str();
+	records << get_record2().str();
+	unsigned count = 0;
+	WARCFile file("test.data");
+	for(auto it=file.begin(); it != file.end(); it++, count++);
 	ASSERT_EQ(2, count);
 }
 

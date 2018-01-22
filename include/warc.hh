@@ -1,9 +1,11 @@
 #ifndef _WARC_HH
 #define _WARC_HH
 
-#include <string>
+#include <fstream>
 #include <istream>
+#include <iterator>
 #include <list>
+#include <string>
 
 namespace warc { inline namespace v1 {
 
@@ -85,6 +87,27 @@ std::ostream& operator<< (std::ostream& os, const WARCField& field);
 std::istream& operator>> (std::istream& is, WARCField& field);
 std::istream& operator>> (std::istream& is, WARCRecord& record);
 std::ostream& operator<< (std::ostream& os, const WARCRecord& record);
+
+/// WARC file stream iterator
+class WARCFile
+{
+	private:
+		std::ifstream _file_stream;
+
+	public:
+		explicit WARCFile(std::string filename) : _file_stream(filename) {};
+
+		auto begin()
+		{
+			return std::istream_iterator<WARCRecord>(_file_stream);
+		};
+
+		auto end()
+		{
+			return std::istream_iterator<WARCRecord>();
+		};
+
+};
 
 } };
 
