@@ -27,7 +27,6 @@ std::stringstream get_invalid_field_name_record()
 	ss << "conformsTo: http://bibnum.bnf.fr/WARC/WARC_ISO_28500_version1_latestdraft.pdf" << CR << LF;
 	ss << CR << LF;
 	ss << CR << LF;
-	ss << CR << LF;
 	return ss;
 }
 
@@ -43,7 +42,6 @@ std::stringstream get_record()
 	ss << "WARC-Filename: CC-MAIN-20171024105736-20171024125736-00899.warc.gz" << CR << LF;
 	ss << CR << LF;
 	ss << get_record_content().str();
-	ss << CR << LF;
 	ss << CR << LF;
 	ss << CR << LF;
 	return ss;
@@ -109,7 +107,6 @@ std::stringstream get_record2()
 	ss << "WARC-Target-URI: http://00iamgundam00.blog.fc2.com/blog-entry-935.html" << CR << LF;
 	ss << CR << LF;
 	ss << get_record2_content().str();
-	ss << CR << LF;
 	ss << CR << LF;
 	ss << CR << LF;
 	return ss;

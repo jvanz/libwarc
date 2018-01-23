@@ -120,10 +120,11 @@ TEST(WARCRecord, warc_record_input_iterator_within_loop)
 	std::stringstream records;
 	records << get_record().str();
 	records << get_record2().str();
-	unsigned count = 1;
+	unsigned count = 0;
 	for(std::istream_iterator<WARCRecord> it(records);
 			it != std::istream_iterator<WARCRecord>(); it++)
 	{
+		count++;
 		if (count == 1) {
 			ASSERT_EQ(6, it->get_fields().size())
 				<< "There are more fields than expected";
@@ -187,7 +188,6 @@ TEST(WARCRecord, warc_record_input_iterator_within_loop)
 			EXPECT_EQ(get_record2_content().str().size(), it->get_content().size());
 			ASSERT_EQ(get_record2_content().str(), it->get_content());
 		}
-		count++;
 	}
 	ASSERT_EQ(2, count);
 }
