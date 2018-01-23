@@ -82,16 +82,11 @@ std::istream& operator>>(std::istream& is, WARCRecord& record)
 		if (it != record.fields.end()){
 			auto length = stoul(it->value);
 			char buffer[length];
-			if (is.read(buffer, length)){
+			if (is.read(buffer, length))
 				record.content = std::string(buffer, length);
-			}
 		}
-		// skip white spaces, CR and LF until next record;
-		char c = CR;
-		do {
-			c = is.get();
-		} while(std::isspace(c) && !is.eof() &&!is.fail());
-		is.unget();
+		// skip CR and LF until next record;
+		is.ignore(4);
 	}
 	return is;
 }
